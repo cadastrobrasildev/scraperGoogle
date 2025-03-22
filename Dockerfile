@@ -41,17 +41,17 @@ RUN apt-get update && apt-get install -y \
 # Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copia os arquivos do package.json e package-lock.json antes do código-fonte
+# Clonar o repositório
+RUN git clone https://github.com/cadastrobrasildev/webscrapper.git .
+
+# Navegar até o diretório do repositório
+WORKDIR /app/emailsScrap
+
+# Copia package.json para instalar dependências
 COPY package.json ./
 
-# **Garante que todas as dependências do projeto sejam instaladas corretamente**
-RUN npm install 
-
-# Copia os arquivos do projeto para dentro do container
-COPY . .
-
-# Define a variável para forçar o download do Chromium
-ENV PUPPETEER_SKIP_DOWNLOAD=false
+# Instala todas as dependências do projeto
+RUN npm install
 
 # Instala manualmente o Puppeteer para garantir que Chromium seja baixado corretamente
 RUN npm install puppeteer@latest
