@@ -44,14 +44,14 @@ WORKDIR /app
 # Clona o repositório
 RUN git clone https://github.com/cadastrobrasildev/webscrapper.git .
 
-# Instala as dependências do projeto
-RUN npm install
+# Evita problemas de permissão
+RUN mkdir -p /app/node_modules/puppeteer/.local-chromium
 
-# Instala Puppeteer separadamente para garantir que ele baixe o Chromium correto
+# Define a variável de ambiente para garantir o download do Chromium
+ENV PUPPETEER_SKIP_DOWNLOAD=false
+
+# Instala as dependências do projeto (incluindo o Puppeteer com Chromium)
 RUN npm install puppeteer@latest
-
-# Corrige permissões do Chromium dentro do Docker
-RUN chmod -R 777 /app/node_modules/puppeteer/.local-chromium
 
 # Define o comando de inicialização
 CMD ["npm", "run", "scrap_google"]
