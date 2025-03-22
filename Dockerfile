@@ -42,7 +42,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copia os arquivos do package.json e package-lock.json antes do código-fonte
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # **Garante que todas as dependências do projeto sejam instaladas corretamente**
 RUN npm install 
