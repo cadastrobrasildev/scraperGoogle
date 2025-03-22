@@ -55,7 +55,7 @@ WORKDIR /app/emailsScrap
 RUN npm install
 
 # Comando para iniciar a aplicação
-CMD ["npm", "run scrap_google"]
+CMD ["npm", "run", "scrap_google"]
 
 # Expor a porta em que a aplicação estará rodando
 EXPOSE 3000
