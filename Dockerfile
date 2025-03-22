@@ -1,7 +1,7 @@
 # Usa a imagem oficial do Node.js como base
 FROM node:18
 
-# Instalar dependências do Chromium necessárias para Puppeteer
+# Instalar dependências do Chromium para o Puppeteer
 RUN apt-get update && apt-get install -y \
   curl \
   git \
@@ -41,23 +41,23 @@ RUN apt-get update && apt-get install -y \
 # Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Clonar o repositório
+# 🔥 Clonar o repositório ANTES de copiar arquivos!
 RUN git clone https://github.com/cadastrobrasildev/webscrapper.git .
 
-# Navegar até o diretório do repositório
+# Navegar até o diretório correto
 WORKDIR /app/emailsScrap
 
-# Copia package.json para instalar dependências
-COPY package.json ./
-
-# Instala todas as dependências do projeto
+# Instalar dependências direto do package.json
 RUN npm install
 
-# Instala manualmente o Puppeteer para garantir que Chromium seja baixado corretamente
+# Instalar Puppeteer manualmente para evitar erros de Chromium
 RUN npm install puppeteer@latest
 
-# Define o comando de inicialização da aplicação
+# Corrigir permissões (caso necessário)
+RUN chmod -R 777 /app/node_modules
+
+# Definir o comando de inicialização
 CMD ["npm", "run", "scrap_google"]
 
-# Expor a porta (caso seja necessário)
+# Expor a porta (caso precise)
 EXPOSE 3000
