@@ -1,7 +1,7 @@
 # Usa a imagem oficial do Node.js como base
 FROM node:18
 
-# Instalar dependências do Chromium
+# Instalar dependências do Chromium necessárias para Puppeteer
 RUN apt-get update && apt-get install -y \
   curl \
   git \
@@ -38,23 +38,26 @@ RUN apt-get update && apt-get install -y \
   xdg-utils \
   --no-install-recommends
 
-# Define o diretório de trabalho
+# Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Clona o repositório
-RUN git clone https://github.com/cadastrobrasildev/webscrapper.git .
+# Copia os arquivos do package.json e package-lock.json antes do código-fonte
+COPY package.json package-lock.json ./
 
-# Evita problemas de permissão
-RUN mkdir -p /app/node_modules/puppeteer/.local-chromium
+# **Garante que todas as dependências do projeto sejam instaladas corretamente**
+RUN npm install 
 
-# Define a variável de ambiente para garantir o download do Chromium
+# Copia os arquivos do projeto para dentro do container
+COPY . .
+
+# Define a variável para forçar o download do Chromium
 ENV PUPPETEER_SKIP_DOWNLOAD=false
 
-# Instala as dependências do projeto (incluindo o Puppeteer com Chromium)
+# Instala manualmente o Puppeteer para garantir que Chromium seja baixado corretamente
 RUN npm install puppeteer@latest
 
-# Define o comando de inicialização
+# Define o comando de inicialização da aplicação
 CMD ["npm", "run", "scrap_google"]
 
-# Expor a porta (se necessário)
+# Expor a porta (caso seja necessário)
 EXPOSE 3000
