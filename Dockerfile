@@ -1,7 +1,7 @@
-# Use a imagem oficial do Node.js como base
+# Usa a imagem oficial do Node.js como base
 FROM node:18
 
-# Atualizar o sistema e instalar dependências adicionais
+# Instalar dependências do Chromium
 RUN apt-get update && apt-get install -y \
   curl \
   git \
@@ -30,32 +30,31 @@ RUN apt-get update && apt-get install -y \
   libglib2.0-0 \
   libnss3-dev \
   libgconf-2-4 \
-  libgtk-3-0
+  libgtk-3-0 \
+  ca-certificates \
+  fonts-liberation \
+  libappindicator3-1 \
+  lsb-release \
+  xdg-utils \
+  --no-install-recommends
 
-# Instalar nvm
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
-
-# Configurar as variáveis de ambiente para nvm e node
-ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION 18
-
-# Instalar o Node.js usando nvm
-RUN bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION && nvm alias default $NODE_VERSION"
-
-# Definir o diretório de trabalho no contêiner
+# Define o diretório de trabalho
 WORKDIR /app
 
-# Clonar o repositório
+# Clona o repositório
 RUN git clone https://github.com/cadastrobrasildev/webscrapper.git .
 
-# Navegar até o diretório do repositório
-WORKDIR /app/emailsScrap
-
-# Instalar as dependências do projeto
+# Instala as dependências do projeto
 RUN npm install
 
-# Comando para iniciar a aplicação
+# Instala Puppeteer separadamente para garantir que ele baixe o Chromium correto
+RUN npm install puppeteer@latest
+
+# Corrige permissões do Chromium dentro do Docker
+RUN chmod -R 777 /app/node_modules/puppeteer/.local-chromium
+
+# Define o comando de inicialização
 CMD ["npm", "run", "scrap_google"]
 
-# Expor a porta em que a aplicação estará rodando
+# Expor a porta (se necessário)
 EXPOSE 3000
