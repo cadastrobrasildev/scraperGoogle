@@ -57,7 +57,7 @@ RUN npm install puppeteer@latest
 RUN chmod -R 777 /app/node_modules
 
 # Definir o comando de inicialização
-CMD ["npm", "run", "scrap_google"]
+CMD ["npm", "run", "scrap_google_pup"]
 
 # Expor a porta (caso precise)
 EXPOSE 3000
