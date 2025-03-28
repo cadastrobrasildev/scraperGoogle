@@ -1,4 +1,4 @@
-# Usa a imagem oficial do Node.js como base
+# Usa a imagem oficial do Node.js como baseasd
 FROM node:18
 
 # Instalar dependências do Chromium para o Puppeteer
